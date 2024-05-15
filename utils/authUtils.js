@@ -13,7 +13,6 @@ export async function RegisterUser(user) {
     const userExists = await client.query("SELECT * FROM users WHERE email = $1 OR phone = $2", [email, phone]);
 
     if (userExists.rows.length > 0) {
-        console.log('User already exists');
         return 'User already exists';
     }
 
