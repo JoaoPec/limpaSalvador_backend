@@ -14,17 +14,13 @@ app.use('/api/auth', userRoutes);
 
 app.get('/', async (req, res) => {
 
-    res.send('Hello World');
-
     try {
         const results = await client.query('SELECT * FROM users');
-        console.table(results.rows);
+        console.log(results.rows);
+        res.json(results.rows);
     } catch (error) {
         console.log(error);
-    }finally{
-        await client.end();
     }
-
 })
 
 

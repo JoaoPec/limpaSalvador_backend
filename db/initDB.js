@@ -1,6 +1,5 @@
 import client from "./pool.js";
 
-
 async function createTable() {
 
     try {

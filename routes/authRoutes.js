@@ -1,8 +1,8 @@
 import express, { json } from "express";
-import registerUser from "../utils/authUtils.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import verifyJwt from "../middlewares/jwt.js";
+import { RegisterUser, LoginUser } from "../utils/authUtils.js";
+import VerifyJwt from "../middlewares/jwt.js";
 
 dotenv.config();
 
@@ -11,15 +11,45 @@ const router = express.Router();
 router.use(express.json());
 
 router.get("/login", (req, res) => {
-    res.send("Login");
+    res.send("login");
 })
+
+
+router.post("/login", async (req, res) => {
+
+    const {email, password} = req.body;
+
+    try{
+        const results = await LoginUser({email, password});
+        console.log("resulst[0]: ", results);
+
+        if(results === 'User does not exist'){
+            res.send({error: 'User does not exist'});
+        }else if(results === 'Invalid password'){
+            res.send({error: 'Invalid password'});
+        }
+
+        const id = results[0].id;
+
+        const token = jwt.sign({id}, process.env.JWT_SECRET, {
+            expiresIn: '1h'
+        });
+
+        res.json({auth: true, token: token, id, data: results, message: 'User logged in successfully'});
+
+    }catch(err){
+        console.log(err);
+    }
+
+})
+
 
 router.post("/register", async (req, res) => {
 
     const { name, email, phone, password } = req.body;
 
     try {
-        const results = await registerUser({ name, email, phone, password });
+        const results = await RegisterUser({ name, email, phone, password });
         console.log(results);
         if (results === 'User already exists') {
             res.send({ error: 'User already exists' });
@@ -39,7 +69,7 @@ router.post("/register", async (req, res) => {
     }
 })
 
-router.get("/checkAuth", verifyJwt, (req, res) => {
+router.get("/checkAuth", VerifyJwt, (req, res) => {
     console.log(req.userId);
     res.json({ auth: true, message: 'User is authenticated' });
 })

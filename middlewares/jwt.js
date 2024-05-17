@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-function verifyJwt(req, res, next){
+function VerifyJwt(req, res, next){
 
     const token = req.headers['access-token'];
 
@@ -17,7 +17,7 @@ function verifyJwt(req, res, next){
             if (err) {
                 res.send({ auth: false, error: 'Failed to authenticate token' });
             } else {
-                req.userId = decoded.id;message
+                req.userId = decoded.id
 
                 console.log("User with id " + req.userId + " is authenticated")
 
@@ -27,4 +27,4 @@ function verifyJwt(req, res, next){
     }
 }
 
-export default verifyJwt;
+export default VerifyJwt;

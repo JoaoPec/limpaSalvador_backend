@@ -25,6 +25,27 @@ export async function RegisterUser(user) {
     }
 }
 
+export async function LoginUser(user) {
 
-export default RegisterUser;
+    const { email, password } = user;
 
+    const userExists = await client.query("SELECT * FROM users WHERE email = $1", [email]);
+
+    if (userExists.rows.length === 0) {
+        return 'User does not exist';
+    }
+
+    const hashedPassword = userExists.rows[0].password;
+
+    console.log("rows:",userExists.rows);
+
+    const match = await bcrypt.compare(password, hashedPassword);
+
+    if (!match) {
+        return 'Invalid password';
+    }
+
+    return userExists.rows;
+}
+
+export default { RegisterUser, LoginUser };
