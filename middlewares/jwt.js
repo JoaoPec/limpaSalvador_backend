@@ -7,15 +7,15 @@ function VerifyJwt(req, res, next){
 
     const token = req.headers['access-token'];
 
-    console.log(token)
 
     if (!token) {
         console.log("No token provided")
-        res.send({ auth: false, error: 'No token provided' });
+        res.json({ auth: false, error: 'No token provided' });
     } else {
         jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (err) {
-                res.send({ auth: false, error: 'Failed to authenticate token' });
+                console.log("Your token has expired")
+                res.json({ auth: false, error: 'Your session is expired' });
             } else {
                 req.userId = decoded.id
 
