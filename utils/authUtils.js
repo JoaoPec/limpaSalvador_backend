@@ -17,7 +17,7 @@ export async function RegisterUser(user) {
     }
 
     try {
-        const results = await client.query("INSERT INTO users (name, email, phone, password) VALUES ($1, $2, $3, $4) RETURNING *", [name, email, phone, hashedPassword]);
+        const results = await client.query("INSERT INTO users (name, email, phone, password) VALUES ($1, $2, $3, $4) RETURNING id, name, email, phone", [name, email, phone, hashedPassword]);
         console.log('User registered successfully');
         return results.rows;
     } catch (error) {
@@ -37,7 +37,7 @@ export async function LoginUser(user) {
 
     const hashedPassword = userExists.rows[0].password;
 
-    console.log("rows:",userExists.rows);
+    console.log("rows:", userExists.rows);
 
     const match = await bcrypt.compare(password, hashedPassword);
 
