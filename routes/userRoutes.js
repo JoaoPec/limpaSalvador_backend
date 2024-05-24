@@ -1,10 +1,11 @@
 import express, { json } from "express"
+import VerifyJwt from "../middlewares/jwt.js";
 
 const router = express.Router();
 
 router.use(express.json());
 
-router.post("/post", async (req, res) => {
+router.post("/post",VerifyJwt, async (req, res) => {
 
     const { title, content } = req.body;
 
@@ -17,3 +18,5 @@ router.post("/post", async (req, res) => {
         res.status(500).send({ error: "An error occurred during post creation" });
     }
 });
+
+export default router;
