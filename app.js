@@ -1,6 +1,7 @@
 import express from 'express';
 import client from './db/pool.js';
 import userRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import cors from 'cors';
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 
 
 app.use('/api/auth', userRoutes);
+app.use('/api/user', userRoutes);
 
 app.get('/', async (req, res) => {
 
