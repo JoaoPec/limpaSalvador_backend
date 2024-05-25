@@ -15,8 +15,9 @@ function VerifyJwt(req, res, next){
         jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (err) {
                 console.log("Your token has expired")
-                res.json({ auth: false, error: 'Your session is expired' });
+                res.status(401).json({ auth: false, error: 'Your token has expired' });
             } else {
+
                 req.userId = decoded.id
 
                 console.log("User with id " + req.userId + " is authenticated")
