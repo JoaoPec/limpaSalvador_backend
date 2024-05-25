@@ -1,7 +1,7 @@
 import express, { json } from "express"
 import VerifyJwt from "../middlewares/jwt.js";
 import { UploadImage } from "../utils/cloudinary.js";
-import { UploadPost } from "../utils/userActions.js";
+import { UploadPost, GetPosts } from "../utils/userActions.js";
 import multer from "multer";
 import fs from "fs";
 
@@ -17,7 +17,7 @@ router.post('/post', VerifyJwt, upload.single('image'), async (req, res) => {
     const { file } = req;
 
 
-    console.log("id: ",req.userId)
+    console.log("id: ", req.userId)
 
     if (!file) {
         return res.status(400).json({ error: 'Image is required' });
@@ -27,7 +27,7 @@ router.post('/post', VerifyJwt, upload.single('image'), async (req, res) => {
 
         const imageUrl = await UploadImage(file.path);
 
-        UploadPost({ title, content, imageUrl, userId: req.userId});
+        UploadPost({ title, content, imageUrl, userId: req.userId });
 
         res.status(201).json({ success: true, message: 'Post created successfully', imageUrl });
 
@@ -40,5 +40,16 @@ router.post('/post', VerifyJwt, upload.single('image'), async (req, res) => {
         }
     }
 });
+
+router.get('/posts', async (req, res) => {
+
+    try {
+        const posts = await GetPosts();
+        res.json(posts);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to get posts' });
+    }
+})
 
 export default router;

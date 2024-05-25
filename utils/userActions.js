@@ -22,3 +22,18 @@ export async function UploadPost(post) {
     }
 }
 
+export async function GetPosts() {
+
+    try {
+
+        const result = await client.query('SELECT * FROM posts');
+
+        console.log("Sending posts...")
+
+        return result.rows;
+    } catch (err) {
+        console.error('Error getting posts:', err);
+        throw new Error('Failed to get posts');
+    }
+}
+
