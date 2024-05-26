@@ -21,6 +21,7 @@ async function createTables() {
                 image_url TEXT NOT NULL,
                 title TEXT NOT NULL,
                 content TEXT NOT NULL,
+                bairro TEXT NOT NULL,
                 user_id INTEGER NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

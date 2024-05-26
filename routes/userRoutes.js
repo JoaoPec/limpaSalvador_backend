@@ -13,7 +13,7 @@ router.use(express.json());
 
 router.post('/post', VerifyJwt, upload.single('image'), async (req, res) => {
 
-    const { title, content } = req.body;
+    const { title, content, bairro } = req.body;
     const { file } = req;
 
 
@@ -27,7 +27,7 @@ router.post('/post', VerifyJwt, upload.single('image'), async (req, res) => {
 
         const imageUrl = await UploadImage(file.path);
 
-        UploadPost({ title, content, imageUrl, userId: req.userId });
+        UploadPost({ title, content, imageUrl, userId: req.userId, bairro});
 
         res.status(201).json({ success: true, message: 'Post created successfully', imageUrl });
 

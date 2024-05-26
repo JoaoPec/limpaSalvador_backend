@@ -55,12 +55,16 @@ router.post("/register", async (req, res) => {
 
     const { name, email, phone, password } = req.body;
 
+    console.log(req.body)
+
     try {
         const results = await RegisterUser({ name, email, phone, password });
         console.log(results);
         if (results === "User already exists") {
             res.send({ error: "User already exists" });
         } else {
+
+            const id = results[0].id;
 
             const token = jwt.sign({ id }, process.env.JWT_SECRET, {
                 expiresIn: "1h",

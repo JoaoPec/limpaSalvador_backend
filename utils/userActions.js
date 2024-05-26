@@ -5,15 +5,17 @@ dotenv.config();
 
 export async function UploadPost(post) {
 
-    const { title, content, imageUrl,userId} = post;
+    const { title, content, imageUrl, userId, bairro } = post;
 
     console.log('Post:', post);
 
     try {
         const result = await client.query(
-            "INSERT INTO posts (image_url, title, content, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
-            [imageUrl, title, content, userId]
+            `INSERT INTO posts (image_url, title, content, user_id, bairro) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+            [imageUrl, title, content, userId, bairro]
         );
+
+        console.log('Post uploaded successfully:', result.rows[0]);
 
         return result.rows[0];
     } catch (err) {
@@ -23,12 +25,14 @@ export async function UploadPost(post) {
 }
 
 export async function GetPosts() {
-
     try {
+        const result = await client.query(`
+            SELECT posts.*, users.name AS user_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+        `);
 
-        const result = await client.query('SELECT * FROM posts');
-
-        console.log("Sending posts...")
+        console.log("Sending posts...");
 
         return result.rows;
     } catch (err) {
@@ -36,4 +40,3 @@ export async function GetPosts() {
         throw new Error('Failed to get posts');
     }
 }
-
