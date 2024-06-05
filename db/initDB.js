@@ -14,7 +14,6 @@ async function createTables() {
             )
         `);
 
-
         await client.query(`
             CREATE TABLE IF NOT EXISTS posts (
                 id SERIAL PRIMARY KEY,
@@ -28,13 +27,24 @@ async function createTables() {
             )
         `);
 
+        await client.query(`
+              CREATE TABLE IF NOT EXISTS comments (
+                    id SERIAL PRIMARY KEY,
+                    content TEXT NOT NULL,
+                    post_id INTEGER NOT NULL,
+                    user_id INTEGER NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+              )
+        `);
+
         console.log("Tables created successfully");
     } catch (error) {
         console.error("Error creating tables:", error);
-    }finally {
+    } finally {
         client.end();
     }
 }
 
 createTables();
-
