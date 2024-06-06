@@ -24,13 +24,15 @@ export async function UploadPost(post) {
     }
 }
 
-export async function UplaodComment(comment) {
+export async function UploadComment(comment) {
 
     const { content, postId, userId } = comment;
 
     if (!content) {
         throw new Error('Comment content is required');
     }
+
+    console.log(postId)
 
     try {
         const result = await client.query(
@@ -52,6 +54,7 @@ export async function UplaodComment(comment) {
 
 
 export async function GetPosts() {
+
     try {
         const result = await client.query(`
             SELECT

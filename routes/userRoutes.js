@@ -1,7 +1,7 @@
 import express, { json } from "express"
 import VerifyJwt from "../middlewares/jwt.js";
 import { UploadImage } from "../utils/cloudinary.js";
-import { UploadPost, GetPosts, UplaodComment } from "../utils/userActions.js";
+import { UploadPost, GetPosts, UploadComment } from "../utils/userActions.js";
 import multer from "multer";
 import fs from "fs";
 
@@ -27,7 +27,7 @@ router.post('/post', VerifyJwt, upload.single('image'), async (req, res) => {
 
         const imageUrl = await UploadImage(file.path);
 
-        UploadPost({ title, content, imageUrl, userId: req.userId, bairro});
+        UploadPost({ title, content, imageUrl, userId: req.userId, bairro });
 
         res.status(201).json({ success: true, message: 'Post created successfully', imageUrl });
 
@@ -45,8 +45,10 @@ router.post('/comment', VerifyJwt, async (req, res) => {
 
     const { content, postId } = req.body;
 
+
+
     try {
-        UplaodComment({ content, postId, userId: req.userId });
+        UploadComment({ content, postId, userId: req.userId });
         res.status(201).json({ success: true, message: 'Comment created successfully' });
     } catch (error) {
         res.status(500).json({ error: `Failed to upload comment` });
