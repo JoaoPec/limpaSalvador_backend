@@ -141,3 +141,48 @@ export async function GetPosts() {
     }
 }
 
+export async function GetUserProfile(userId) {
+
+    try {
+        // Get user details
+        const userResult = await client.query(`
+            SELECT id, name, email FROM users WHERE id = $1
+        `, [userId]);
+
+        if (userResult.rows.length === 0) {
+            throw new Error('User not found');
+        }
+
+        const user = userResult.rows[0];
+
+        // Get user's posts
+        const postsResult = await client.query(`
+            SELECT posts.*, users.name AS user_name
+            FROM posts
+            JOIN users ON posts.user_id = users.id
+            WHERE users.id = $1
+        `, [userId]);
+
+        const posts = postsResult.rows;
+
+        // Get user's comments
+        const commentsResult = await client.query(`
+            SELECT comments.*, posts.title AS post_title, post_users.name AS post_user_name
+            FROM comments
+            JOIN posts ON comments.post_id = posts.id
+            JOIN users AS post_users ON posts.user_id = post_users.id
+            WHERE comments.user_id = $1
+        `, [userId]);
+
+        const comments = commentsResult.rows;
+
+        return {
+            user,
+            posts,
+            comments
+        };
+    } catch (err) {
+        console.error('Error getting user profile:', err);
+        throw new Error('Failed to get user profile');
+    }
+}

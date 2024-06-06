@@ -1,7 +1,7 @@
 import express, { json } from "express"
 import VerifyJwt from "../middlewares/jwt.js";
 import { UploadImage } from "../utils/cloudinary.js";
-import { UploadPost, GetPosts, UploadComment } from "../utils/userActions.js";
+import { UploadPost, GetPosts, UploadComment, GetUserProfile } from "../utils/userActions.js";
 import multer from "multer";
 import fs from "fs";
 
@@ -63,6 +63,19 @@ router.get('/posts', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ error: 'Failed to get posts' });
+    }
+})
+
+router.get("/profile", VerifyJwt, async (req, res) => {
+
+    const userId = req.userId;
+
+    try {
+        const user = await GetUserProfile(userId);
+        console.log("User profile:: ", user)
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get user profile' });
     }
 })
 
