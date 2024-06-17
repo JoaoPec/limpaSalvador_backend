@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import cors from 'cors';
+import cron from 'node-cron';
+import http from 'http';
 
 const app = express();
 
@@ -29,4 +31,33 @@ app.get('/', async (req, res) => {
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
+
+      // Configurando node-cron para fazer uma requisição a cada 14 minutos
+  cron.schedule('*/14 * * * *', () => {
+    console.log('Fazendo requisição para manter a API ativa');
+    const options = {
+      hostname: 'localhost',
+      port: 3000,
+      path: '/',
+      method: 'GET'
+    };
+
+    const req = http.request(options, (res) => {
+      console.log(`STATUS: ${res.statusCode}`);
+      res.setEncoding('utf8');
+      res.on('data', (chunk) => {
+        console.log(`BODY: ${chunk}`);
+      });
+      res.on('end', () => {
+        console.log('No more data in response.');
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error(`Problem with request: ${e.message}`);
+    });
+
+    req.end();
+  });
+
 })
