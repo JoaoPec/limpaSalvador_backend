@@ -1,7 +1,7 @@
 import express, { json } from "express"
 import VerifyJwt from "../middlewares/jwt.js";
 import { UploadImage } from "../utils/cloudinary.js";
-import { UploadPost, GetPosts, UploadComment, GetUserProfile } from "../utils/userActions.js";
+import { UploadPost, GetPosts, UploadComment, GetUserProfile, DeletePost } from "../utils/userActions.js";
 import multer from "multer";
 import fs from "fs";
 
@@ -63,6 +63,21 @@ router.get('/posts', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ error: 'Failed to get posts' });
+    }
+})
+
+//Dynamic route for deletePost
+
+router.delete('/post/:id', VerifyJwt, async (req, res) => {
+
+
+    try {
+
+        await DeletePost(req.params.id)
+
+        res.json({ success: true, message: 'Post deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete post' });
     }
 })
 

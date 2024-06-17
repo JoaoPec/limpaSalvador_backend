@@ -141,6 +141,24 @@ export async function GetPosts() {
     }
 }
 
+export async function DeletePost(postId) {
+
+    console.log(postId);
+
+    try {
+        const result = await client.query(`
+                DELETE FROM posts WHERE id = $1
+            `, [postId]);
+
+        console.log('Post deleted successfully:', result.rowCount);
+
+        return result.rowCount;
+    } catch (err) {
+        console.error('Error deleting post:', err);
+        throw new Error('Failed to delete post');
+    }
+}
+
 export async function GetUserProfile(userId) {
 
     try {
