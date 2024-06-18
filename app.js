@@ -34,7 +34,7 @@ app.listen(3000, () => {
     console.log('Server is running on port 3000');
 
     // Configurando node-cron para fazer uma requisição a cada 14 minutos
-    cron.schedule('*/14 * * * *', () => {
+    cron.schedule('*/10 * * * *', () => {
         console.log('Fazendo requisição para manter a API ativa');
         const options = {
             hostname: 'localhost',
