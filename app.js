@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 import cors from 'cors';
 import cron from 'node-cron';
 import http from 'http';
+import VerifyJwt from './middlewares/jwt.js';
 
 const app = express();
 
@@ -18,7 +19,7 @@ dotenv.config();
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
-app.get('/', async (req, res) => {
+app.get('/',VerifyJwt, async (req, res) => {
 
     try {
         const results = await client.query('SELECT * FROM users');
